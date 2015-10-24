@@ -49,6 +49,7 @@ read_files <- function(x) {
   file$instructor <- file_metadata_info[2]
   file$semester <- file_metadata_info[3]
   file$observation <- file_metadata_info[4]
+  file$year <- substr(file$course, start = 1, stop = 1)
   return(file)
 }
 
@@ -77,6 +78,7 @@ read.csv(paste0("ObservationFiles/", outliers_row[1])) %>% View
 
 ```{r}
 all_files_clean <- rbindlist(all_files) %>% as.data.frame()
+all_files_clean[is.na(all_files_clean)] <- 0
 all_files_clean %>% head() %>% kable(format = "markdown")
 ```
 
@@ -103,32 +105,88 @@ all_files_clean_marks <- full_join(all_files_clean, class_perform)
 write.csv(x = all_files_clean_marks, file = "all_observations_cleaned.csv", quote = F, row.names = F)
 ```
 
-# Some plots
+## Fractional amount of time spent on each category overall
 
-## Question 1: fraction of time spent on activities versus growth (student performance)
+```{r}
+gathered_values <- all_files_clean %>% 
+  tbl_df() %>%
+  select(-time) %>%
+  gather(key = measure, value = value, -(course:year), na.rm = T)
 
-### Time spent on lecture vs growth
+gathered_values %>% 
+  group_by(measure) %>%
+  summarize(total_time = sum(value)/n()) %>%
+  ggplot(aes(y = total_time, x = reorder(measure, total_time)))+
+  geom_point() + 
+  xlab("Activitiy") + 
+  coord_flip() +
+  theme_bw()
+```
 
-All courses - each dot is one course
+## Fractional amount of time spent on each category overall per year
+
+```{r}
+gathered_values %>% 
+  group_by(year, measure) %>%
+  summarize(total_time = sum(value)/n()) %>%
+  ggplot(aes(y = total_time, x = reorder(measure, total_time), group = year, color = year))+
+  geom_point() + 
+  geom_line() +
+  xlab("Activitiy") + 
+  # facet_wrap(~ year, nrow = 1) + 
+  coord_flip() +
+  theme_bw()
+```
+
+## Fractional amount of time spent on each category for all courses in 1st year, further granuarized by instructor
+
+The labels in each box represents the course
+
+```{r}
+gathered_values %>% 
+  filter(year == 1) %>%
+  group_by(course, instructor, measure) %>%
+  summarize(total_time = sum(value)/n()) %>%
+  ggplot(aes(y = total_time, x = reorder(measure, total_time), color = instructor, group = instructor))+
+  geom_line() + 
+  xlab("Activitiy") + 
+  facet_wrap(~ course, nrow = 1) + 
+  coord_flip() +
+  theme_bw()
+```
+
+# Question 1: fraction of time spent on activities versus growth (student performance)
+
+## Time spent on lecture vs student growth
+
+All courses - each dot is one course (separated by year level)
 
 ```{r student_perf_vs_lecture_time}
-all_files_clean_marks %>%
+student_perf_vs_lecture_time <- all_files_clean_marks %>%
   group_by(course, instructor, semester) %>%
   summarize(
     num_obs = n(),
     num_lecture = sum(Instructor.Lecturing, na.rm = T),
     student_performance = mean(StudentPerformance.SectionAverage)
   ) %>%
-  mutate(percent_time = num_lecture / num_obs, course_level = substr(course, start = 1, stop = 1)) %>%
+  mutate(percent_time = num_lecture / num_obs, course_level = paste0("year", substr(course, start = 1, stop = 1)))
+
+student_perf_vs_lecture_time %>%
   ggplot(aes(x = student_performance, y = percent_time)) +
     facet_wrap(~ course_level) + 
     geom_point() +
-    ylab("Percent time spent on lecturing") +
-    xlab("Student performance")
+    geom_smooth(method = "lm", se = F) +
+    ylab("Fraction of time spent on lecturing") +
+    xlab("Gain in student performance")
 ```
 
+Looks like there's a positive correlation with lecture time and student performance in first year classes, and a negative correlation in second year classes
 
+# Question 2: Quantifying transitions in class "states"
 
+Looking only at 
+
+## Time spent on lecture vs student growth
 
 
 

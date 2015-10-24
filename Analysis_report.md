@@ -29,7 +29,7 @@ opts_chunk$set(echo=F)
 
 
 ```
-## [1] 30
+## [1] 31
 ```
 
 ```
@@ -43,14 +43,14 @@ Number of rows/columns all over the place - assume that there should only be 26 
 ### Issue fixed - went back and fixed the read file function and combined all data
 
 
-| time| Students.Listening| Students.IndividualWork| Students.ClickerQuestionInGroups| Students.Worksheet| Students.OtherGroupwork| Student.AnsweringQuestion| Student.AskingQuestion| Students.WholeClassDiscussion| Students.MakingPrediction| Students.Presentation| Students.Quiz| Students.Waiting| Students.Other| Instructor.Lecturing| Instructor.WritingOnBoard| Instructor.GivingFeedback| Instructor.AskingQuestion| Instructor.AskingClickerQuestion| Instructor.AnsweringQuestion| Instructor.MovingThroughGroup| Instructor.OneOnOne| Instructor.ShowingVideo| Instructor.Administration| Instructor.Waiting| Instructor.Other|course |instructor |semester |observation |
-|----:|------------------:|-----------------------:|--------------------------------:|------------------:|-----------------------:|-------------------------:|----------------------:|-----------------------------:|-------------------------:|---------------------:|-------------:|----------------:|--------------:|--------------------:|-------------------------:|-------------------------:|-------------------------:|--------------------------------:|----------------------------:|-----------------------------:|-------------------:|-----------------------:|-------------------------:|------------------:|----------------:|:------|:----------|:--------|:-----------|
-|    2|                  1|                      NA|                                1|                 NA|                      NA|                        NA|                     NA|                            NA|                        NA|                    NA|            NA|               NA|             NA|                   NA|                        NA|                         1|                         1|                                1|                           NA|                            NA|                  NA|                      NA|                        NA|                 NA|               NA|11     |A          |1        |1           |
-|    4|                 NA|                      NA|                                1|                 NA|                      NA|                        NA|                     NA|                            NA|                        NA|                    NA|            NA|               NA|             NA|                   NA|                        NA|                        NA|                         1|                               NA|                           NA|                            NA|                  NA|                      NA|                        NA|                 NA|               NA|11     |A          |1        |1           |
-|    6|                  1|                      NA|                                1|                 NA|                      NA|                        NA|                     NA|                            NA|                        NA|                    NA|            NA|               NA|             NA|                    1|                        NA|                         1|                         1|                                1|                           NA|                            NA|                  NA|                      NA|                        NA|                 NA|               NA|11     |A          |1        |1           |
-|    8|                 NA|                      NA|                                1|                 NA|                      NA|                        NA|                     NA|                            NA|                        NA|                    NA|            NA|               NA|             NA|                   NA|                        NA|                         1|                        NA|                                1|                           NA|                            NA|                  NA|                      NA|                        NA|                 NA|               NA|11     |A          |1        |1           |
-|   10|                  1|                      NA|                               NA|                 NA|                      NA|                        NA|                      1|                            NA|                        NA|                    NA|            NA|               NA|             NA|                   NA|                        NA|                         1|                        NA|                               NA|                            1|                            NA|                  NA|                      NA|                        NA|                 NA|               NA|11     |A          |1        |1           |
-|   12|                  1|                      NA|                               NA|                  1|                      NA|                        NA|                     NA|                            NA|                        NA|                    NA|            NA|               NA|             NA|                   NA|                        NA|                         1|                         1|                               NA|                           NA|                            NA|                  NA|                      NA|                        NA|                 NA|               NA|11     |A          |1        |1           |
+| time| Students.Listening| Students.IndividualWork| Students.ClickerQuestionInGroups| Students.Worksheet| Students.OtherGroupwork| Student.AnsweringQuestion| Student.AskingQuestion| Students.WholeClassDiscussion| Students.MakingPrediction| Students.Presentation| Students.Quiz| Students.Waiting| Students.Other| Instructor.Lecturing| Instructor.WritingOnBoard| Instructor.GivingFeedback| Instructor.AskingQuestion| Instructor.AskingClickerQuestion| Instructor.AnsweringQuestion| Instructor.MovingThroughGroup| Instructor.OneOnOne| Instructor.ShowingVideo| Instructor.Administration| Instructor.Waiting| Instructor.Other|course |instructor |semester |observation |year |
+|----:|------------------:|-----------------------:|--------------------------------:|------------------:|-----------------------:|-------------------------:|----------------------:|-----------------------------:|-------------------------:|---------------------:|-------------:|----------------:|--------------:|--------------------:|-------------------------:|-------------------------:|-------------------------:|--------------------------------:|----------------------------:|-----------------------------:|-------------------:|-----------------------:|-------------------------:|------------------:|----------------:|:------|:----------|:--------|:-----------|:----|
+|    2|                  1|                       0|                                1|                  0|                       0|                         0|                      0|                             0|                         0|                     0|             0|                0|              0|                    0|                         0|                         1|                         1|                                1|                            0|                             0|                   0|                       0|                         0|                  0|                0|11     |A          |1        |1           |1    |
+|    4|                  0|                       0|                                1|                  0|                       0|                         0|                      0|                             0|                         0|                     0|             0|                0|              0|                    0|                         0|                         0|                         1|                                0|                            0|                             0|                   0|                       0|                         0|                  0|                0|11     |A          |1        |1           |1    |
+|    6|                  1|                       0|                                1|                  0|                       0|                         0|                      0|                             0|                         0|                     0|             0|                0|              0|                    1|                         0|                         1|                         1|                                1|                            0|                             0|                   0|                       0|                         0|                  0|                0|11     |A          |1        |1           |1    |
+|    8|                  0|                       0|                                1|                  0|                       0|                         0|                      0|                             0|                         0|                     0|             0|                0|              0|                    0|                         0|                         1|                         0|                                1|                            0|                             0|                   0|                       0|                         0|                  0|                0|11     |A          |1        |1           |1    |
+|   10|                  1|                       0|                                0|                  0|                       0|                         0|                      1|                             0|                         0|                     0|             0|                0|              0|                    0|                         0|                         1|                         0|                                0|                            1|                             0|                   0|                       0|                         0|                  0|                0|11     |A          |1        |1           |1    |
+|   12|                  1|                       0|                                0|                  1|                       0|                         0|                      0|                             0|                         0|                     0|             0|                0|              0|                    0|                         0|                         1|                         1|                                0|                            0|                             0|                   0|                       0|                         0|                  0|                0|11     |A          |1        |1           |1    |
 
 ### Merge in class performance levels
 
@@ -73,18 +73,35 @@ Number of rows/columns all over the place - assume that there should only be 26 
 ## Joining by: c("course", "instructor", "semester")
 ```
 
-# Some plots
+## Fractional amount of time spent on each category overall
 
-## Question 1: fraction of time spent on activities versus growth (student performance)
+![](Analysis_report_files/figure-html/unnamed-chunk-9-1.png) 
 
-### Time spent on lecture vs growth
+## Fractional amount of time spent on each category overall per year
 
-All courses - each dot is one course
+![](Analysis_report_files/figure-html/unnamed-chunk-10-1.png) 
+
+## Fractional amount of time spent on each category for all courses in 1st year, further granuarized by instructor
+
+The labels in each box represents the course
+
+![](Analysis_report_files/figure-html/unnamed-chunk-11-1.png) 
+
+# Question 1: fraction of time spent on activities versus growth (student performance)
+
+## Time spent on lecture vs student growth
+
+All courses - each dot is one course (separated by year level)
 
 ![](Analysis_report_files/figure-html/student_perf_vs_lecture_time-1.png) 
 
+Looks like there's a positive correlation with lecture time and student performance in first year classes, and a negative correlation in second year classes
 
+# Question 2: Quantifying transitions in class "states"
 
+Looking only at 
+
+## Time spent on lecture vs student growth
 
 
 
