@@ -20,30 +20,6 @@ opts_chunk$set(echo=F)
 ```
 
 
-```
-## Loading required package: ggplot2
-## Loading required package: dplyr
-## 
-## Attaching package: 'dplyr'
-## 
-## The following objects are masked from 'package:stats':
-## 
-##     filter, lag
-## 
-## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
-## 
-## Loading required package: stringr
-## Loading required package: tidyr
-## Loading required package: data.table
-## 
-## Attaching package: 'data.table'
-## 
-## The following objects are masked from 'package:dplyr':
-## 
-##     between, last
-```
 
 ## Load data
 

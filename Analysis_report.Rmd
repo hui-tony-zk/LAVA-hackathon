@@ -19,12 +19,12 @@ opts_chunk$set(echo=F)
 ```
 
 ```{r warning=FALSE, error=FALSE}
-require(ggplot2)
-require(dplyr)
-require(stringr)
-require(tidyr)
-require(data.table)
-require(ggplot2)
+suppressPackageStartupMessages(require(ggplot2))
+suppressPackageStartupMessages(require(dplyr))
+suppressPackageStartupMessages(require(stringr))
+suppressPackageStartupMessages(require(tidyr))
+suppressPackageStartupMessages(require(data.table))
+suppressPackageStartupMessages(require(ggplot2))
 ```
 
 ## Load data
