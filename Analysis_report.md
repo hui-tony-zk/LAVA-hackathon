@@ -35,6 +35,7 @@ opts_chunk$set(echo=F)
 ##     intersect, setdiff, setequal, union
 ## 
 ## Loading required package: stringr
+## Loading required package: tidyr
 ## Loading required package: data.table
 ## 
 ## Attaching package: 'data.table'
@@ -56,7 +57,7 @@ opts_chunk$set(echo=F)
 ```
 
 ```
-##  [1] 23 24 26 25 21 20 17 18 41 40 38 37 39 35 34 19 22 36
+##  [1] 16 17 18 19 20 21 22 23 24 25 33 34 35 36 37 38 39 40
 ```
 
 Number of rows/columns all over the place - assume that there should only be 26 "real" columns (plus the 4 columns of metadata that was added) - use this function to figure out what's wrong.
@@ -74,6 +75,35 @@ Number of rows/columns all over the place - assume that there should only be 26 
 |    8|                 NA|                      NA|                                1|                 NA|                      NA|                        NA|                     NA|                            NA|                        NA|                    NA|            NA|               NA|             NA|                   NA|                        NA|                         1|                        NA|                                1|                           NA|                            NA|                  NA|                      NA|                        NA|                 NA|               NA|11     |A          |1        |1           |
 |   10|                  1|                      NA|                               NA|                 NA|                      NA|                        NA|                      1|                            NA|                        NA|                    NA|            NA|               NA|             NA|                   NA|                        NA|                         1|                        NA|                               NA|                            1|                            NA|                  NA|                      NA|                        NA|                 NA|               NA|11     |A          |1        |1           |
 |   12|                  1|                      NA|                               NA|                  1|                      NA|                        NA|                     NA|                            NA|                        NA|                    NA|            NA|               NA|             NA|                   NA|                        NA|                         1|                         1|                               NA|                           NA|                            NA|                  NA|                      NA|                        NA|                 NA|               NA|11     |A          |1        |1           |
+
+### Merge in class performance levels
+
+#### Read in the file
+
+
+|course |instructor |semester | StudentPerformance.SectionAverage| StudentPerformance.StandardError|ClassSize     |
+|:------|:----------|:--------|---------------------------------:|--------------------------------:|:-------------|
+|11     |A          |1        |                          74.09648|                         1.853726|More than 200 |
+|11     |B          |1        |                          56.49132|                         3.643105|More than 200 |
+|11     |C          |1        |                          70.73516|                         2.167993|More than 200 |
+|11     |D          |1        |                          69.68558|                         1.855365|More than 200 |
+|12     |E          |2        |                          29.07547|                         3.354000|More than 200 |
+|12     |H          |2        |                          22.28033|                         3.297568|More than 200 |
+
+#### Merge with the rest
+
+
+```
+## Joining by: c("course", "instructor", "semester")
+```
+
+# Some plots
+
+## Question 1: fraction of time spent on activities versus growth (student performance)
+
+### Time spent on lecture vs growth
+
+![](Analysis_report_files/figure-html/student_perf_vs_lecture_time-1.png) 
 
 
 

@@ -22,7 +22,9 @@ opts_chunk$set(echo=F)
 require(ggplot2)
 require(dplyr)
 require(stringr)
+require(tidyr)
 require(data.table)
+require(ggplot2)
 ```
 
 ## Load data
@@ -38,7 +40,7 @@ read_files <- function(x) {
   
   file <- read.csv(paste0("ObservationFiles/", x))
   colnames(file)[1] <- "time" # first column is time, but it is unlabeled
-  file <- file[1:length(levels(file$time)),]
+  file <- file[1:length(levels(file$time))-1,]
   file$time <- 1:nrow(file) *2
   if (ncol(file) > 26) {
     file <- file %>% select(-starts_with("X")) # some columns have a shit-tonne of extra columns, presumably due to excel export error...
@@ -58,7 +60,7 @@ names(all_files) <- files
 
 ```{r}
 lapply(all_files, ncol) %>% unlist %>% unique()
-lapply(all_files, nrow) %>% unlist %>% unique()
+lapply(all_files, nrow) %>% unlist %>% unique() %>% sort()
 ```
 
 Number of rows/columns all over the place - assume that there should only be 26 "real" columns (plus the 4 columns of metadata that was added) - use this function to figure out what's wrong.
@@ -67,7 +69,7 @@ Number of rows/columns all over the place - assume that there should only be 26 
 (outliers_column <- all_files[lapply(all_files, ncol) == 31] %>% names)
 read.csv(paste0("ObservationFiles/", outliers_column[1])) %>% colnames
 
-(outliers_row <- all_files[lapply(all_files, nrow) == 41] %>% names)
+(outliers_row <- all_files[lapply(all_files, nrow) == 49] %>% names)
 read.csv(paste0("ObservationFiles/", outliers_row[1])) %>% View
 ```
 
@@ -75,8 +77,51 @@ read.csv(paste0("ObservationFiles/", outliers_row[1])) %>% View
 
 ```{r}
 all_files_clean <- rbindlist(all_files) %>% as.data.frame()
-write.csv(x = all_files_clean, file = "all_observations_cleaned.csv", quote = F, row.names = F)
 all_files_clean %>% head() %>% kable(format = "markdown")
+```
+
+### Merge in class performance levels
+
+#### Read in the file
+
+```{r}
+class_perform <- read.csv("StudentPerformance.csv") %>%
+  separate(ClassSection, into = c("course", "instructor", "semester"), sep = "-") 
+  
+
+class_perform$course <- str_replace(class_perform$course, pattern = "Course", replacement = "")
+class_perform$instructor <- str_replace(class_perform$instructor, pattern = "Instr", replacement = "")
+class_perform$semester <- str_replace(class_perform$semester, pattern = "Semester", replacement = "")
+
+class_perform %>% head() %>% kable(format = "markdown")
+```
+
+#### Merge with the rest
+
+```{r}
+all_files_clean_marks <- full_join(all_files_clean, class_perform)
+write.csv(x = all_files_clean_marks, file = "all_observations_cleaned.csv", quote = F, row.names = F)
+```
+
+# Some plots
+
+## Question 1: fraction of time spent on activities versus growth (student performance)
+
+### Time spent on lecture vs growth
+
+```{r student_perf_vs_lecture_time}
+all_files_clean_marks %>%
+  group_by(course, instructor, semester) %>%
+  summarize(
+    num_obs = n(),
+    num_lecture = sum(Instructor.Lecturing, na.rm = T),
+    student_performance = mean(StudentPerformance.SectionAverage)
+  ) %>%
+  mutate(percent_time = num_lecture / num_obs) %>%
+  ggplot(aes(x = student_performance, y = percent_time)) +
+    geom_point() +
+    xlab("Percent time spent on lecturing") +
+    ylab("Student performance")
 ```
 
 
