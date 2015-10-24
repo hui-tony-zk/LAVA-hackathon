@@ -1,0 +1,70 @@
+---
+title: "Final_Analysis.Rmd"
+author: "Tony Hui"
+date: "October 24, 2015"
+output: html_document
+---
+
+# Prelimary analysis of the Data
+
+## Load dependencies
+
+```{r}
+require(ggplot2)
+require(dplyr)
+require(stringr)
+require(data.table)
+```
+
+## Load data
+
+```{r}
+files <- dir(path = "ObservationFiles/")
+
+read_files <- function(x) {
+  filename <- x
+  file_metadata_info <- str_split_fixed(gsub(".csv", "", filename), pattern = "-", n = 4) %>% 
+    c() %>% 
+    str_replace(pattern = "Course|Instr|Semester|Observation", replacement = "")
+  
+  file <- read.csv(paste0("ObservationFiles/", x))
+  colnames(file)[1] <- "time" # first column is time, but it is unlabeled
+  if (ncol(file) > 26) {
+    file <- file %>% select(-starts_with("X")) # some columns have a shit-tonne of extra columns, presumably due to excel export error...
+  }
+  file$course <- file_metadata_info[1]
+  file$instructor <- file_metadata_info[2]
+  file$semester <- file_metadata_info[3]
+  file$observation <- file_metadata_info[4]
+  return(file)
+}
+
+all_files <- lapply(files, read_files)
+names(all_files) <- files
+```
+
+### Sneak peak at the data
+
+```{r}
+lapply(all_files, ncol) %>% unlist %>% unique
+```
+
+Number of columns all over the place - assume that there should only be 26 "real" columns (plus the 4 columns of metadata that was added) - use this function to figure out what's wrong
+
+```{r}
+(outliers <- all_files[lapply(all_files, ncol) == 31] %>% names)
+read.csv(paste0("ObservationFiles/", outliers[1])) %>% colnames
+```
+
+### Issue fixed, combining all data
+
+```{r}
+all_files_clean <- rbindlist(all_files) %>% as.data.frame()
+write.csv(x = all_files_clean, file = "all_observations_cleaned.csv", quote = F, row.names = F)
+```
+
+
+
+
+
+
