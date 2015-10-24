@@ -2,7 +2,11 @@
 title: "Final_Analysis.Rmd"
 author: "Tony Hui"
 date: "October 24, 2015"
-output: html_document
+output: 
+  html_document: 
+    keep_md: yes
+    self_contained: no
+    toc: yes
 ---
 
 # Prelimary analysis of the Data
@@ -10,6 +14,11 @@ output: html_document
 ## Load dependencies
 
 ```{r}
+require(knitr)
+opts_chunk$set(echo=F)
+```
+
+```{r warning=FALSE, error=FALSE}
 require(ggplot2)
 require(dplyr)
 require(stringr)
@@ -51,16 +60,17 @@ lapply(all_files, ncol) %>% unlist %>% unique
 
 Number of columns all over the place - assume that there should only be 26 "real" columns (plus the 4 columns of metadata that was added) - use this function to figure out what's wrong
 
-```{r}
+```{r eval=FALSE}
 (outliers <- all_files[lapply(all_files, ncol) == 31] %>% names)
 read.csv(paste0("ObservationFiles/", outliers[1])) %>% colnames
 ```
 
-### Issue fixed, combining all data
+### Issue fixed - went back and fixed the read file function and combined all data
 
 ```{r}
 all_files_clean <- rbindlist(all_files) %>% as.data.frame()
 write.csv(x = all_files_clean, file = "all_observations_cleaned.csv", quote = F, row.names = F)
+all_files_clean %>% head() %>% kable(format = "markdown")
 ```
 
 
