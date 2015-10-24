@@ -109,6 +109,8 @@ write.csv(x = all_files_clean_marks, file = "all_observations_cleaned.csv", quot
 
 ### Time spent on lecture vs growth
 
+All courses - each dot is one course
+
 ```{r student_perf_vs_lecture_time}
 all_files_clean_marks %>%
   group_by(course, instructor, semester) %>%
@@ -117,11 +119,12 @@ all_files_clean_marks %>%
     num_lecture = sum(Instructor.Lecturing, na.rm = T),
     student_performance = mean(StudentPerformance.SectionAverage)
   ) %>%
-  mutate(percent_time = num_lecture / num_obs) %>%
+  mutate(percent_time = num_lecture / num_obs, course_level = substr(course, start = 1, stop = 1)) %>%
   ggplot(aes(x = student_performance, y = percent_time)) +
+    facet_wrap(~ course_level) + 
     geom_point() +
-    xlab("Percent time spent on lecturing") +
-    ylab("Student performance")
+    ylab("Percent time spent on lecturing") +
+    xlab("Student performance")
 ```
 
 

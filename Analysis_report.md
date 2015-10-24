@@ -79,6 +79,8 @@ Number of rows/columns all over the place - assume that there should only be 26 
 
 ### Time spent on lecture vs growth
 
+All courses - each dot is one course
+
 ![](Analysis_report_files/figure-html/student_perf_vs_lecture_time-1.png) 
 
 
