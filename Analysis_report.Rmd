@@ -38,6 +38,8 @@ read_files <- function(x) {
   
   file <- read.csv(paste0("ObservationFiles/", x))
   colnames(file)[1] <- "time" # first column is time, but it is unlabeled
+  file <- file[1:length(levels(file$time)),]
+  file$time <- 1:nrow(file) *2
   if (ncol(file) > 26) {
     file <- file %>% select(-starts_with("X")) # some columns have a shit-tonne of extra columns, presumably due to excel export error...
   }
@@ -55,14 +57,18 @@ names(all_files) <- files
 ### Sneak peak at the data
 
 ```{r}
-lapply(all_files, ncol) %>% unlist %>% unique
+lapply(all_files, ncol) %>% unlist %>% unique()
+lapply(all_files, nrow) %>% unlist %>% unique()
 ```
 
-Number of columns all over the place - assume that there should only be 26 "real" columns (plus the 4 columns of metadata that was added) - use this function to figure out what's wrong
+Number of rows/columns all over the place - assume that there should only be 26 "real" columns (plus the 4 columns of metadata that was added) - use this function to figure out what's wrong.
 
 ```{r eval=FALSE}
-(outliers <- all_files[lapply(all_files, ncol) == 31] %>% names)
-read.csv(paste0("ObservationFiles/", outliers[1])) %>% colnames
+(outliers_column <- all_files[lapply(all_files, ncol) == 31] %>% names)
+read.csv(paste0("ObservationFiles/", outliers_column[1])) %>% colnames
+
+(outliers_row <- all_files[lapply(all_files, nrow) == 41] %>% names)
+read.csv(paste0("ObservationFiles/", outliers_row[1])) %>% View
 ```
 
 ### Issue fixed - went back and fixed the read file function and combined all data
