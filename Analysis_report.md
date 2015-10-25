@@ -93,6 +93,15 @@ The labels in each box represents the course id
 
 ![](Analysis_report_files/figure-html/unnamed-chunk-12-1.png) 
 
+
+## Time spent on lecture vs student growth
+
+All courses - each dot is one course (separated by year level)
+
+![](Analysis_report_files/figure-html/student_perf_vs_lecture_time-1.png) 
+
+Looks like there's a positive correlation with lecture time and student performance in first year classes, and a negative correlation in second year classes
+
 # Question 1: Which activities (individually) has an effect on student performance?
 
 ## Plot the variation of each measure for a single course and compare across instructors-semester pairings
@@ -230,15 +239,9 @@ NOTE: The gradient labels represents the students performance, normalized betwee
 
 ![](Analysis_report_files/figure-html/unnamed-chunk-21-1.png) 
 
-## Time spent on lecture vs student growth
-
-All courses - each dot is one course (separated by year level)
-
-![](Analysis_report_files/figure-html/student_perf_vs_lecture_time-1.png) 
-
-Looks like there's a positive correlation with lecture time and student performance in first year classes, and a negative correlation in second year classes
-
-## Time spent on lecture vs student growth
+## What about across all courses?
 
 
+
+![](Analysis_report_files/figure-html/unnamed-chunk-23-1.png) 
 

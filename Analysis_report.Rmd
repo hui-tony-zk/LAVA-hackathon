@@ -168,6 +168,33 @@ gathered_values %>%
   theme_bw()
 ```
 
+
+## Time spent on lecture vs student growth
+
+All courses - each dot is one course (separated by year level)
+
+```{r student_perf_vs_lecture_time}
+student_perf_vs_lecture_time <- all_files_clean_marks %>%
+  group_by(course, instructor, semester) %>%
+  summarize(
+    num_obs = n(),
+    num_lecture = sum(Instructor.Lecturing, na.rm = T),
+    student_performance = mean(StudentPerformance.SectionAverage)
+  ) %>%
+  mutate(percent_time = num_lecture / num_obs, course_level = paste0("year", substr(course, start = 1, stop = 1)))
+
+student_perf_vs_lecture_time %>%
+  ggplot(aes(x = student_performance, y = percent_time)) +
+    facet_wrap(~ course_level) + 
+    geom_point() +
+    geom_smooth(method = "lm", se = F) +
+    ylab("Fraction of time spent on lecturing") +
+    xlab("Gain in student performance") +
+    theme_bw()
+```
+
+Looks like there's a positive correlation with lecture time and student performance in first year classes, and a negative correlation in second year classes
+
 # Question 1: Which activities (individually) has an effect on student performance?
 
 ## Plot the variation of each measure for a single course and compare across instructors-semester pairings
@@ -357,33 +384,63 @@ heatmap.2(cluster_matrix,
 # dev.off()
 ```
 
-## Time spent on lecture vs student growth
+## What about across all courses?
 
-All courses - each dot is one course (separated by year level)
+```{r}
+cluster_setup <- all_files_clean_marks %>% 
+  tbl_df() %>%
+  # filter(course == 12 | course == 11) %>%
+  gather(key = measure, value = value, -(course:ClassSize), -time) %>%
+  filter(measure %in% variable_dimensions$measure) %>%
+  droplevels() %>%
+  group_by(course, instructor, measure, StudentPerformance.SectionAverage) %>%
+  summarize(frac_time = sum(value)/n()) 
 
-```{r student_perf_vs_lecture_time}
-student_perf_vs_lecture_time <- all_files_clean_marks %>%
-  group_by(course, instructor, semester) %>%
-  summarize(
-    num_obs = n(),
-    num_lecture = sum(Instructor.Lecturing, na.rm = T),
-    student_performance = mean(StudentPerformance.SectionAverage)
-  ) %>%
-  mutate(percent_time = num_lecture / num_obs, course_level = paste0("year", substr(course, start = 1, stop = 1)))
+normalize_to_01 <- function(x) (x - min(x))/(max(x) - min(x))
 
-student_perf_vs_lecture_time %>%
-  ggplot(aes(x = student_performance, y = percent_time)) +
-    facet_wrap(~ course_level) + 
-    geom_point() +
-    geom_smooth(method = "lm", se = F) +
-    ylab("Fraction of time spent on lecturing") +
-    xlab("Gain in student performance") +
-    theme_bw()
+cluster_normalized <- cluster_setup %>% 
+  ungroup() %>%
+  group_by(measure) %>%
+  # mutate(normalized_measure = (frac_time - mean(frac_time))/sd(frac_time)) %>%
+  mutate(normalized_measure = normalize_to_01(frac_time)) %>%
+  group_by(course, instructor, StudentPerformance.SectionAverage) %>%
+  select(-frac_time) %>%
+  spread(key = measure, value = normalized_measure)
+
+cluster_matrix <- cluster_normalized %>%
+  select(-instructor, -course, -StudentPerformance.SectionAverage) %>% data.matrix()
+
+rownames(cluster_matrix) <- cluster_normalized$instructor
+
+cluster_matrix <- t(cluster_matrix)
+
+mydist <- function(x) dist(x, method = "euclidian")
+myhclust <- function(x) hclust(x, method = "ward.D")
+
+# , "#5e4fa2"
+nbreaks = 11
+colors = colorRampPalette(c("#f03b20", "#ffffcc"), bias = 1)(nbreaks)
+
+label_colors <- c("#ffffb2", "#fecc5c", "#fd8d3c", "#f03b20", "#bd0026")
+
 ```
 
-Looks like there's a positive correlation with lecture time and student performance in first year classes, and a negative correlation in second year classes
+```{r, fig.height=8, fig.width=8}
+# png(file = "heatmap2.png")
+norm_perform <- normalize_to_01(cluster_normalized$StudentPerformance.SectionAverage)
+gradient_pallete <- colorRampPalette(c("#b35806", "#f7f7f7", "#542788"))(100)
+norm_values <- round(norm_perform, 2) * 100
+norm_values[norm_values == 0] <- 1
 
-## Time spent on lecture vs student growth
-
-
+heatmap.2(cluster_matrix,
+          distfun=mydist,
+          hclustfun=myhclust,
+          ColSideColors = gradient_pallete[norm_values],
+          dendrogram = "both",
+          Rowv=reorder(as.dendrogram(myhclust(mydist(cluster_matrix))), wts = 1:ncol(cluster_matrix)),
+          col = colors,
+          trace = "none",
+          margins = c(4,12))
+# dev.off()
+```
 
