@@ -2,9 +2,18 @@
 Tony Hui  
 October 24, 2015  
 
+# Introduction to us
+
+## Team Members
+
+* Tony Hui - MSc student in Genome Sciences
+* Tyler Robb-smith - Physics PhD graduate
+* Nathan Roberson - Statistics PhD graduate
+* Renee Mak - Freelance graphic designer
+
 # Prelimary analysis of the Data
 
-## Load dependencies
+## Load dependencies and Data
 
 
 ```r
@@ -20,8 +29,6 @@ opts_chunk$set(echo=F)
 ```
 
 
-
-## Load data
 
 
 
