@@ -77,7 +77,7 @@ Number of rows/columns all over the place - assume that there should only be 26 
 (outliers_column <- all_files[lapply(all_files, ncol) == 31] %>% names)
 read.csv(paste0("ObservationFiles/", outliers_column[1])) %>% colnames
 
-(outliers_row <- all_files[lapply(all_files, nrow) == 49] %>% names)
+(outliers_row <- all_files[lapply(all_files, nrow) == 16] %>% names)
 read.csv(paste0("ObservationFiles/", outliers_row[1])) %>% View
 ```
 
@@ -162,7 +162,7 @@ all_files_clean_marks[,c("course", "instructor", "semester")] %>%
 
 The labels in each box represents the course id
 
-```{r}
+```{r, fig.width=10}
 gathered_values %>% 
   filter(course == 21 | course == 12 | course == 11) %>%
   group_by(course, instructor, measure) %>%
