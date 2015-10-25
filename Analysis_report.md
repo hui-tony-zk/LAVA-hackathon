@@ -83,7 +83,7 @@ Number of rows/columns all over the place - assume that there should only be 26 
 
 ![](Analysis_report_files/figure-html/unnamed-chunk-10-1.png) 
 
-## Number of different instructors per course
+## Number of different instructor-semester pairings per course
 
 ![](Analysis_report_files/figure-html/unnamed-chunk-11-1.png) 
 
@@ -194,18 +194,41 @@ It really doesn't make sense to look across courses since different courses have
 #### Take only the dimensions that are significant (top 6)
 
 
-|id                               |   Estimate| Std. Error|      pval| Pr(>&#124;t&#124;)|
-|:--------------------------------|----------:|----------:|---------:|------------------:|
-|Instructor.AskingClickerQuestion |  -753.4640|   313.7805| -2.401246|          0.0957672|
-|Instructor.OneOnOne              | -1358.9201|   630.4000| -2.155647|          0.1200670|
-|Students.Presentation            |  -947.9532|   548.6590| -1.727764|          0.1824799|
-|Instructor.GivingFeedback        |  -299.9165|   204.1989| -1.468747|          0.2382211|
-|Student.AnsweringQuestion        |  -309.3133|   219.2729| -1.410632|          0.2531652|
-|Instructor.ShowingVideo          |  -255.3824|   198.1522| -1.288819|          0.2878514|
+|id                               |   estimate|    stderr|      tval|      pval|
+|:--------------------------------|----------:|---------:|---------:|---------:|
+|Students.ClickerQuestionInGroups |   792.4511|  329.6340|  2.404033| 0.0955275|
+|Instructor.AskingClickerQuestion |  -753.4640|  313.7805| -2.401246| 0.0957672|
+|Instructor.OneOnOne              | -1358.9201|  630.4000| -2.155647| 0.1200670|
+|Instructor.Waiting               |   606.3203|  301.1180|  2.013564| 0.1375088|
+|Students.MakingPrediction        |  6810.2533| 3566.5069|  1.909502| 0.1522005|
+|Instructor.Other                 |   822.8232|  476.2320|  1.727778| 0.1824773|
 
 #### Looking at how these variables predict student performance
 
 ![](Analysis_report_files/figure-html/unnamed-chunk-18-1.png) 
+
+Conclusion: cannot compare across courses
+
+# Question 3 - which classes are arranged such that they have similar amounts of time spent on each activity?
+
+## Focusing on course 12 for now
+
+
+```
+## Loading required package: gplots
+## 
+## Attaching package: 'gplots'
+## 
+## The following object is masked from 'package:stats':
+## 
+##     lowess
+```
+
+
+
+NOTE: The gradient labels represents the students performance, normalized between 0 to 1. Brown = low, purple = high (values normalized between 0 to 1)
+
+![](Analysis_report_files/figure-html/unnamed-chunk-21-1.png) 
 
 ## Time spent on lecture vs student growth
 
@@ -214,10 +237,6 @@ All courses - each dot is one course (separated by year level)
 ![](Analysis_report_files/figure-html/student_perf_vs_lecture_time-1.png) 
 
 Looks like there's a positive correlation with lecture time and student performance in first year classes, and a negative correlation in second year classes
-
-# Question 2: Quantifying transitions in class "states"
-
-Looking only at 
 
 ## Time spent on lecture vs student growth
 

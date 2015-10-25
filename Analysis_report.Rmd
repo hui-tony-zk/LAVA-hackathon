@@ -138,10 +138,10 @@ gathered_values %>%
   theme_bw()
 ```
 
-## Number of different instructors per course
+## Number of different instructor-semester pairings per course
 
 ```{r}
-all_files_clean_marks[,c("course", "instructor")] %>%
+all_files_clean_marks[,c("course", "instructor", "semester")] %>%
   unique() %>%
   group_by(course) %>%
   tally() %>%
@@ -256,7 +256,7 @@ p_values <- coef(summary(model)) %>%
   as.data.frame() %>%
   add_rownames("id") %>%
   filter(!grepl("Intercept", id)) %>%
-  setnames(colnames(.)[4], "pval") %>%
+  setnames(colnames(.), c("id", "estimate", "stderr", "tval", "pval")) %>%
   arrange(pval)
 
 p_values %>% head(6) %>% kable(format = "markdown")
@@ -290,11 +290,72 @@ Conclusion: cannot compare across courses
 
 ```{r}
 require(gplots)
-summary_of_fract_time_spent %>% 
-  filter(course == 12) %>% 
-  mutate(id = paste0(instructor, semester))
+variable_dimensions <- ind_predictors_variability %>% 
+  filter(sd_frac_time > 0) %>%
+  group_by(measure) %>%
+  tally() %>%
+  filter(n == 3)
+
+cluster_setup <- all_files_clean_marks %>% 
+  tbl_df() %>%
+  filter(course == 12 | course == 11) %>%
+  gather(key = measure, value = value, -(course:ClassSize), -time) %>%
+  filter(measure %in% variable_dimensions$measure) %>%
+  droplevels() %>%
+  group_by(course, instructor, measure, StudentPerformance.SectionAverage) %>%
+  summarize(frac_time = sum(value)/n()) 
+
+normalize_to_01 <- function(x) (x - min(x))/(max(x) - min(x))
+
+cluster_normalized <- cluster_setup %>% 
+  ungroup() %>%
+  group_by(measure) %>%
+  # mutate(normalized_measure = (frac_time - mean(frac_time))/sd(frac_time)) %>%
+  mutate(normalized_measure = normalize_to_01(frac_time)) %>%
+  group_by(course, instructor, StudentPerformance.SectionAverage) %>%
+  select(-frac_time) %>%
+  spread(key = measure, value = normalized_measure)
+
+cluster_matrix <- cluster_normalized %>%
+  select(-instructor, -course, -StudentPerformance.SectionAverage) %>% data.matrix()
+
+rownames(cluster_matrix) <- cluster_normalized$instructor
+
+cluster_matrix <- t(cluster_matrix)
 ```
 
+```{r}
+mydist <- function(x) dist(x, method = "euclidian")
+myhclust <- function(x) hclust(x, method = "ward.D")
+
+# , "#5e4fa2"
+nbreaks = 11
+colors = colorRampPalette(c("#f03b20", "#ffffcc"), bias = 1)(nbreaks)
+
+label_colors <- c("#ffffb2", "#fecc5c", "#fd8d3c", "#f03b20", "#bd0026")
+
+```
+
+NOTE: The gradient labels represents the students performance, normalized between 0 to 1. Brown = low, purple = high (values normalized between 0 to 1)
+
+```{r, fig.height=8, fig.width=8}
+# png(file = "heatmap2.png")
+norm_perform <- normalize_to_01(cluster_normalized$StudentPerformance.SectionAverage)
+gradient_pallete <- colorRampPalette(c("#b35806", "#f7f7f7", "#542788"))(100)
+norm_values <- round(norm_perform, 2) * 100
+norm_values[norm_values == 0] <- 1
+
+heatmap.2(cluster_matrix,
+          distfun=mydist,
+          hclustfun=myhclust,
+          ColSideColors = gradient_pallete[norm_values],
+          dendrogram = "both",
+          Rowv=reorder(as.dendrogram(myhclust(mydist(cluster_matrix))), wts = 1:ncol(cluster_matrix)),
+          col = colors,
+          trace = "none",
+          margins = c(4,12))
+# dev.off()
+```
 
 ## Time spent on lecture vs student growth
 
@@ -321,10 +382,6 @@ student_perf_vs_lecture_time %>%
 ```
 
 Looks like there's a positive correlation with lecture time and student performance in first year classes, and a negative correlation in second year classes
-
-# Question 2: Quantifying transitions in class "states"
-
-Looking only at 
 
 ## Time spent on lecture vs student growth
 
