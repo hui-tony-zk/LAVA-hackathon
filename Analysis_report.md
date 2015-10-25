@@ -119,68 +119,20 @@ It really doesn't make sense to look across courses since different courses have
 
 ![](Analysis_report_files/figure-html/unnamed-chunk-13-1.png) 
 
-## Plot correlation between the top activities with the highest variation
+## Plot correlation between the top activities with the highest variations
 
 
-```
-## Joining by: c("course", "measure")
-```
-
-
-
-|course |instructor |semester |measure                          | StudentPerformance.SectionAverage| StudentPerformance.StandardError| frac_time| mean_frac_time| sd_frac_time|
-|:------|:----------|:--------|:--------------------------------|---------------------------------:|--------------------------------:|---------:|--------------:|------------:|
-|11     |A          |1        |Student.AnsweringQuestion        |                         74.096482|                         1.853726| 0.2234043|      0.1984793|    0.1081545|
-|11     |A          |1        |Instructor.Lecturing             |                         74.096482|                         1.853726| 0.5425532|      0.6452251|    0.1506574|
-|11     |A          |1        |Instructor.GivingFeedback        |                         74.096482|                         1.853726| 0.4893617|      0.3695967|    0.1952960|
-|11     |B          |1        |Student.AnsweringQuestion        |                         56.491321|                         3.643105| 0.0390625|      0.1984793|    0.1081545|
-|11     |B          |1        |Instructor.Lecturing             |                         56.491321|                         3.643105| 0.8671875|      0.6452251|    0.1506574|
-|11     |B          |1        |Instructor.GivingFeedback        |                         56.491321|                         3.643105| 0.1015625|      0.3695967|    0.1952960|
-|11     |C          |1        |Student.AnsweringQuestion        |                         70.735163|                         2.167993| 0.2631579|      0.1984793|    0.1081545|
-|11     |C          |1        |Instructor.Lecturing             |                         70.735163|                         2.167993| 0.5614035|      0.6452251|    0.1506574|
-|11     |C          |1        |Instructor.GivingFeedback        |                         70.735163|                         2.167993| 0.3508772|      0.3695967|    0.1952960|
-|11     |D          |1        |Student.AnsweringQuestion        |                         69.685584|                         1.855365| 0.2682927|      0.1984793|    0.1081545|
-|11     |D          |1        |Instructor.Lecturing             |                         69.685584|                         1.855365| 0.6097561|      0.6452251|    0.1506574|
-|11     |D          |1        |Instructor.GivingFeedback        |                         69.685584|                         1.855365| 0.5365854|      0.3695967|    0.1952960|
-|12     |E          |2        |Students.ClickerQuestionInGroups |                         29.075469|                         3.354000| 0.0632911|      0.1053506|    0.1383469|
-|12     |E          |2        |Instructor.WritingOnBoard        |                         29.075469|                         3.354000| 0.3670886|      0.3414951|    0.2244159|
-|12     |E          |2        |Instructor.AskingClickerQuestion |                         29.075469|                         3.354000| 0.0759494|      0.1744882|    0.1548260|
-|12     |F          |1        |Students.ClickerQuestionInGroups |                         30.921103|                         2.152980| 0.0000000|      0.1053506|    0.1383469|
-|12     |F          |1        |Instructor.WritingOnBoard        |                         30.921103|                         2.152980| 0.7391304|      0.3414951|    0.2244159|
-|12     |F          |1        |Instructor.AskingClickerQuestion |                         30.921103|                         2.152980| 0.0000000|      0.1744882|    0.1548260|
-|12     |G          |1        |Students.ClickerQuestionInGroups |                         27.217778|                         4.870562| 0.0625000|      0.1053506|    0.1383469|
-|12     |G          |1        |Instructor.WritingOnBoard        |                         27.217778|                         4.870562| 0.3035714|      0.3414951|    0.2244159|
-|12     |G          |1        |Instructor.AskingClickerQuestion |                         27.217778|                         4.870562| 0.0625000|      0.1744882|    0.1548260|
-|12     |G          |2        |Students.ClickerQuestionInGroups |                         37.504844|                         3.353172| 0.0138889|      0.1053506|    0.1383469|
-|12     |G          |2        |Instructor.WritingOnBoard        |                         37.504844|                         3.353172| 0.2500000|      0.3414951|    0.2244159|
-|12     |G          |2        |Instructor.AskingClickerQuestion |                         37.504844|                         3.353172| 0.1666667|      0.1744882|    0.1548260|
-|12     |H          |2        |Students.ClickerQuestionInGroups |                         22.280333|                         3.297568| 0.4142857|      0.1053506|    0.1383469|
-|12     |H          |2        |Instructor.WritingOnBoard        |                         22.280333|                         3.297568| 0.3000000|      0.3414951|    0.2244159|
-|12     |H          |2        |Instructor.AskingClickerQuestion |                         22.280333|                         3.297568| 0.5000000|      0.1744882|    0.1548260|
-|12     |I          |2        |Students.ClickerQuestionInGroups |                         35.350797|                         2.319770| 0.0684932|      0.1053506|    0.1383469|
-|12     |I          |2        |Instructor.WritingOnBoard        |                         35.350797|                         2.319770| 0.5616438|      0.3414951|    0.2244159|
-|12     |I          |2        |Instructor.AskingClickerQuestion |                         35.350797|                         2.319770| 0.2054795|      0.1744882|    0.1548260|
-|12     |J          |2        |Students.ClickerQuestionInGroups |                         24.308571|                         2.878751| 0.0263158|      0.1053506|    0.1383469|
-|12     |J          |2        |Instructor.WritingOnBoard        |                         24.308571|                         2.878751| 0.2105263|      0.3414951|    0.2244159|
-|12     |J          |2        |Instructor.AskingClickerQuestion |                         24.308571|                         2.878751| 0.1315789|      0.1744882|    0.1548260|
-|12     |K          |2        |Students.ClickerQuestionInGroups |                         18.763265|                         3.785731| 0.1940299|      0.1053506|    0.1383469|
-|12     |K          |2        |Instructor.WritingOnBoard        |                         18.763265|                         3.785731| 0.0000000|      0.3414951|    0.2244159|
-|12     |K          |2        |Instructor.AskingClickerQuestion |                         18.763265|                         3.785731| 0.2537313|      0.1744882|    0.1548260|
-|21     |L          |1        |Instructor.Lecturing             |                          7.293879|                         4.871935| 0.8656716|      0.5679053|    0.1919070|
-|21     |L          |1        |Instructor.GivingFeedback        |                          7.293879|                         4.871935| 0.1940299|      0.3833762|    0.1373068|
-|21     |L          |1        |Instructor.AskingQuestion        |                          7.293879|                         4.871935| 0.1791045|      0.3937903|    0.1415409|
-|21     |M          |1        |Instructor.Lecturing             |                         38.059427|                         2.813679| 0.4794521|      0.5679053|    0.1919070|
-|21     |M          |1        |Instructor.GivingFeedback        |                         38.059427|                         2.813679| 0.3150685|      0.3833762|    0.1373068|
-|21     |M          |1        |Instructor.AskingQuestion        |                         38.059427|                         2.813679| 0.4657534|      0.3937903|    0.1415409|
-|21     |N          |1        |Instructor.Lecturing             |                         31.196647|                         3.008129| 0.4776119|      0.5679053|    0.1919070|
-|21     |N          |1        |Instructor.GivingFeedback        |                         31.196647|                         3.008129| 0.5522388|      0.3833762|    0.1373068|
-|21     |N          |1        |Instructor.AskingQuestion        |                         31.196647|                         3.008129| 0.5522388|      0.3937903|    0.1415409|
-|21     |O          |1        |Instructor.Lecturing             |                         35.405000|                         2.970039| 0.6417910|      0.5679053|    0.1919070|
-|21     |O          |1        |Instructor.GivingFeedback        |                         35.405000|                         2.970039| 0.4626866|      0.3833762|    0.1373068|
-|21     |O          |1        |Instructor.AskingQuestion        |                         35.405000|                         2.970039| 0.3432836|      0.3937903|    0.1415409|
-|21     |P          |1        |Instructor.Lecturing             |                         31.242000|                         2.951173| 0.3750000|      0.5679053|    0.1919070|
-|21     |P          |1        |Instructor.GivingFeedback        |                         31.242000|                         2.951173| 0.3928571|      0.3833762|    0.1373068|
-|21     |P          |1        |Instructor.AskingQuestion        |                         31.242000|                         2.951173| 0.4285714|      0.3937903|    0.1415409|
+|course |measure                          | mean_frac_time| sd_frac_time|
+|:------|:--------------------------------|--------------:|------------:|
+|11     |Instructor.GivingFeedback        |      0.3695967|    0.1952960|
+|11     |Instructor.Lecturing             |      0.6452251|    0.1506574|
+|11     |Student.AnsweringQuestion        |      0.1984793|    0.1081545|
+|12     |Instructor.WritingOnBoard        |      0.3414951|    0.2244159|
+|12     |Instructor.AskingClickerQuestion |      0.1744882|    0.1548260|
+|12     |Students.ClickerQuestionInGroups |      0.1053506|    0.1383469|
+|21     |Instructor.Lecturing             |      0.5679053|    0.1919070|
+|21     |Instructor.AskingQuestion        |      0.3937903|    0.1415409|
+|21     |Instructor.GivingFeedback        |      0.3833762|    0.1373068|
 
 ```
 ## Joining by: c("course", "measure")
@@ -312,3 +264,6 @@ NOTE: The gradient labels represents the students performance, normalized betwee
 
 ![](Analysis_report_files/figure-html/unnamed-chunk-23-1.png) 
 
+# Quantifying "chaos" - check if the activity profile changed between 2 minute blocks
+
+![alt](chaos.png)
