@@ -7,9 +7,13 @@ October 24, 2015
 ## Team Members
 
 * Tony Hui - MSc student in Genome Sciences
+    + http://makedatasense.ca/
+    + https://ca.linkedin.com/in/huitonyzk
 * Tyler Robb-smith - Physics PhD graduate
 * Nathan Roberson - Statistics PhD graduate
+    + https://www.linkedin.com/in/nathandroberson
 * Renee Mak - Freelance graphic designer
+    + http://reneemak.com
 
 # Prelimary analysis of the Data
 
