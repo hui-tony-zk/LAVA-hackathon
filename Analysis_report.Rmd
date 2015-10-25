@@ -88,8 +88,7 @@ all_files_clean %>% head() %>% kable(format = "markdown")
 
 ```{r}
 class_perform <- read.csv("StudentPerformance.csv") %>%
-  separate(ClassSection, into = c("course", "instructor", "semester"), sep = "-") 
-  
+  separate(ClassSection, into = c("course", "instructor", "semester"), sep = "-")
 
 class_perform$course <- str_replace(class_perform$course, pattern = "Course", replacement = "")
 class_perform$instructor <- str_replace(class_perform$instructor, pattern = "Instr", replacement = "")
@@ -116,21 +115,21 @@ gathered_values <- all_files_clean %>%
 
 gathered_values %>% 
   group_by(measure) %>%
-  summarize(total_time = sum(value)/n()) %>%
-  ggplot(aes(y = total_time, x = reorder(measure, total_time)))+
+  summarize(frac_time = sum(value)/n()) %>%
+  ggplot(aes(y = frac_time, x = reorder(measure, frac_time)))+
   geom_point() + 
   xlab("Activitiy") + 
   coord_flip() +
   theme_bw()
 ```
 
-## Fractional amount of time spent on each category overall per year
+## Fractional amount of time spent on each category overall per class year
 
 ```{r}
 gathered_values %>% 
   group_by(year, measure) %>%
-  summarize(total_time = sum(value)/n()) %>%
-  ggplot(aes(y = total_time, x = reorder(measure, total_time), group = year, color = year))+
+  summarize(frac_time = sum(value)/n()) %>%
+  ggplot(aes(y = frac_time, x = reorder(measure, frac_time), group = year, color = year))+
   geom_point() + 
   geom_line() +
   xlab("Activitiy") + 
@@ -139,16 +138,29 @@ gathered_values %>%
   theme_bw()
 ```
 
-## Fractional amount of time spent on each category for all courses in 1st year, further granuarized by instructor
+## Number of different instructors per course
 
-The labels in each box represents the course
+```{r}
+all_files_clean_marks[,c("course", "instructor")] %>%
+  unique() %>%
+  group_by(course) %>%
+  tally() %>%
+  ggplot(aes(reorder(course, n), n)) +
+    geom_bar(stat = "identity") +
+    xlab("Course ID") +
+    theme_bw()
+```
+
+## Fractional amount of time spent on each category for course `12`, `21`, and `11`, further granuarized by instructor
+
+The labels in each box represents the course id
 
 ```{r}
 gathered_values %>% 
-  filter(year == 1) %>%
+  filter(course == 21 | course == 12 | course == 11) %>%
   group_by(course, instructor, measure) %>%
-  summarize(total_time = sum(value)/n()) %>%
-  ggplot(aes(y = total_time, x = reorder(measure, total_time), color = instructor, group = instructor))+
+  summarize(frac_time = sum(value)/n()) %>%
+  ggplot(aes(y = frac_time, x = reorder(measure, frac_time), color = instructor, group = instructor))+
   geom_line() + 
   xlab("Activitiy") + 
   facet_wrap(~ course, nrow = 1) + 
@@ -158,20 +170,24 @@ gathered_values %>%
 
 # Question 1: Which activities (individually) has an effect on student performance?
 
-## Plot the variation of each measure for `course 11` between instructors-semester pairings
+## Plot the variation of each measure for a single course and compare across instructors-semester pairings
 
 It really doesn't make sense to look across courses since different courses have different content = different methods of learning - scientific method: only vary one variable at a time.
 
+### Plot the variation of each measure for course 12 between instructors-semester pairings
+
 ```{r}
+course_of_interest = c(11, 12, 21)
+
 ind_predictors <- all_files_clean_marks %>% 
   tbl_df() %>%
   gather(key = measure, value = value, -(course:ClassSize), -time) %>%
-  filter(course == 11) %>%
-  group_by(instructor, semester, measure, StudentPerformance.SectionAverage, StudentPerformance.StandardError) %>%
+  filter(course %in% course_of_interest) %>%
+  group_by(course, instructor, semester, measure, StudentPerformance.SectionAverage, StudentPerformance.StandardError) %>%
   summarize(frac_time = sum(value)/n())
 
 ind_predictors_variability <- ind_predictors %>%
-  group_by(measure) %>%
+  group_by(course, measure) %>%
   summarize(mean_frac_time = mean(frac_time), sd_frac_time = sd(frac_time)) %>%
   arrange(desc(sd_frac_time))
 
@@ -179,19 +195,106 @@ ggplot(ind_predictors_variability, aes(x = reorder(measure, sd_frac_time), y = m
   geom_point() +
   geom_errorbar(aes(ymin = mean_frac_time - sd_frac_time, ymax = mean_frac_time + sd_frac_time)) +
   coord_flip() +
-  xlab("Fraction of class time spent\n(error bars represents standard deviation")
+  facet_wrap(~ course) +
+  xlab("Fraction of class time spent\n(error bars represents standard deviation") +
+  theme_bw()
 ```
 
 ## Plot correlation between the top 3 variable activities
 
 ```{r width=10}
-ind_predictors %>%
-  filter(measure %in% ind_predictors_variability$measure[1:3]) %>%
+inner_join(
+  ind_predictors, 
+  ind_predictors_variability %>% arrange(desc(sd_frac_time)) %>% do(head(., 5))
+  ) %>%
   ggplot(aes(StudentPerformance.SectionAverage, frac_time)) +
   geom_point() +
   geom_smooth(method = "lm", se = FALSE) +
-  facet_wrap(~ measure, scales = "free")
+  facet_grid(course ~ measure, scales = "free") +
+  theme_bw()
 ```
+
+
+# Question 2: Which activities (individually) explains the largest variability in student performance across all courses?
+
+### Multiple linear regression
+
+#### Transform data for regression modelling
+
+```{r}
+summary_of_fract_time_spent <- all_files_clean_marks %>% 
+  tbl_df() %>%
+  gather(key = measure, value = value, -(course:ClassSize), -time) %>%
+  group_by(course, instructor, semester, measure, StudentPerformance.SectionAverage, StudentPerformance.StandardError) %>%
+  summarize(frac_time = sum(value)/n()) %>%
+  spread(key = measure, value = frac_time)
+
+write.csv(x = summary_of_fract_time_spent, file = "summary_of_fract_time_spent.csv", quote = F, row.names = F)
+
+summary_of_fract_time_spent %>% head() %>% kable(format = "markdown")
+```
+
+#### Predicting student performance as a function of all our variables
+
+```{r}
+# course_of_interest <- c(11, 12)
+course_of_interest <- unique(summary_of_fract_time_spent$course)
+
+predicting_variables <- colnames(summary_of_fract_time_spent)[-(1:5)]
+model <- glm(
+  formula = as.formula(paste("StudentPerformance.SectionAverage ~ ",paste(predicting_variables, collapse= "+"))), 
+  data = summary_of_fract_time_spent %>% filter(course %in% course_of_interest)
+  )
+
+summary(model)
+```
+
+#### Take only the dimensions that are significant (top 6)
+
+```{r}
+p_values <- coef(summary(model)) %>%
+  as.data.frame() %>%
+  add_rownames("id") %>%
+  filter(!grepl("Intercept", id)) %>%
+  setnames(colnames(.)[4], "pval") %>%
+  arrange(pval)
+
+p_values %>% head(6) %>% kable(format = "markdown")
+
+predicting_variables <- p_values$id[1:6]
+```
+
+#### Looking at how these variables predict student performance
+
+```{r}
+all_classes_performance <- all_files_clean_marks %>% 
+  tbl_df() %>%
+  gather(key = measure, value = value, -(course:ClassSize), -time) %>%
+  group_by(course, year,instructor, semester, measure, StudentPerformance.SectionAverage, StudentPerformance.StandardError) %>%
+  summarize(frac_time = sum(value)/n()) %>%
+  filter(measure %in% predicting_variables)
+
+all_classes_performance %>%
+  ggplot(aes(StudentPerformance.SectionAverage, frac_time)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE)  +
+  facet_wrap(~ measure, scales = "free_y") +
+  theme_bw()
+```
+
+Conclusion: cannot compare across courses
+
+# Question 3 - which classes are arranged such that they have similar amounts of time spent on each activity?
+
+## Focusing on course 12 for now
+
+```{r}
+require(gplots)
+summary_of_fract_time_spent %>% 
+  filter(course == 12) %>% 
+  mutate(id = paste0(instructor, semester))
+```
+
 
 ## Time spent on lecture vs student growth
 
