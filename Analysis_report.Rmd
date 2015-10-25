@@ -234,9 +234,14 @@ ggplot(ind_predictors_variability, aes(x = reorder(measure, sd_frac_time), y = m
   theme_bw()
 ```
 
-## Plot correlation between the top 3 variable activities
+## Plot correlation between the top activities with the highest variation
 
 ```{r width=10}
+inner_join(
+  ind_predictors, 
+  ind_predictors_variability %>% arrange(desc(sd_frac_time)) %>% do(head(., 3))
+  ) %>% kable(format = "markdown")
+
 inner_join(
   ind_predictors, 
   ind_predictors_variability %>% arrange(desc(sd_frac_time)) %>% do(head(., 5))
