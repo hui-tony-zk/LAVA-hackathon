@@ -105,13 +105,14 @@ all_files_clean_marks <- full_join(all_files_clean, class_perform)
 write.csv(x = all_files_clean_marks, file = "all_observations_cleaned.csv", quote = F, row.names = F)
 ```
 
+# Basic exploratory analysis
+
 ## Fractional amount of time spent on each category overall
 
 ```{r}
 gathered_values <- all_files_clean %>% 
   tbl_df() %>%
-  select(-time) %>%
-  gather(key = measure, value = value, -(course:year), na.rm = T)
+  gather(key = measure, value = value, -(course:year), -time, na.rm = T)
 
 gathered_values %>% 
   group_by(measure) %>%
@@ -155,7 +156,42 @@ gathered_values %>%
   theme_bw()
 ```
 
-# Question 1: fraction of time spent on activities versus growth (student performance)
+# Question 1: Which activities (individually) has an effect on student performance?
+
+## Plot the variation of each measure for `course 11` between instructors-semester pairings
+
+It really doesn't make sense to look across courses since different courses have different content = different methods of learning - scientific method: only vary one variable at a time.
+
+```{r}
+ind_predictors <- all_files_clean_marks %>% 
+  tbl_df() %>%
+  gather(key = measure, value = value, -(course:ClassSize), -time) %>%
+  filter(course == 11) %>%
+  group_by(instructor, semester, measure, StudentPerformance.SectionAverage, StudentPerformance.StandardError) %>%
+  summarize(frac_time = sum(value)/n())
+
+ind_predictors_variability <- ind_predictors %>%
+  group_by(measure) %>%
+  summarize(mean_frac_time = mean(frac_time), sd_frac_time = sd(frac_time)) %>%
+  arrange(desc(sd_frac_time))
+
+ggplot(ind_predictors_variability, aes(x = reorder(measure, sd_frac_time), y = mean_frac_time)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = mean_frac_time - sd_frac_time, ymax = mean_frac_time + sd_frac_time)) +
+  coord_flip() +
+  xlab("Fraction of class time spent\n(error bars represents standard deviation")
+```
+
+## Plot correlation between the top 3 variable activities
+
+```{r width=10}
+ind_predictors %>%
+  filter(measure %in% ind_predictors_variability$measure[1:3]) %>%
+  ggplot(aes(StudentPerformance.SectionAverage, frac_time)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  facet_wrap(~ measure, scales = "free")
+```
 
 ## Time spent on lecture vs student growth
 
@@ -177,7 +213,8 @@ student_perf_vs_lecture_time %>%
     geom_point() +
     geom_smooth(method = "lm", se = F) +
     ylab("Fraction of time spent on lecturing") +
-    xlab("Gain in student performance")
+    xlab("Gain in student performance") +
+    theme_bw()
 ```
 
 Looks like there's a positive correlation with lecture time and student performance in first year classes, and a negative correlation in second year classes

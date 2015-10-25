@@ -73,6 +73,8 @@ Number of rows/columns all over the place - assume that there should only be 26 
 ## Joining by: c("course", "instructor", "semester")
 ```
 
+# Basic exploratory analysis
+
 ## Fractional amount of time spent on each category overall
 
 ![](Analysis_report_files/figure-html/unnamed-chunk-9-1.png) 
@@ -87,7 +89,17 @@ The labels in each box represents the course
 
 ![](Analysis_report_files/figure-html/unnamed-chunk-11-1.png) 
 
-# Question 1: fraction of time spent on activities versus growth (student performance)
+# Question 1: Which activities (individually) has an effect on student performance?
+
+## Plot the variation of each measure for `course 11` between instructors-semester pairings
+
+It really doesn't make sense to look across courses since different courses have different content = different methods of learning - scientific method: only vary one variable at a time.
+
+![](Analysis_report_files/figure-html/unnamed-chunk-12-1.png) 
+
+## Plot correlation between the top 3 variable activities
+
+![](Analysis_report_files/figure-html/unnamed-chunk-13-1.png) 
 
 ## Time spent on lecture vs student growth
 
